@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Image Gallery</title>
+    <style>
+        /* General layout styles to center the main content on the screen */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;   /* fallback color, also shows in the padded margin around the pattern */
+            position: relative;           /* anchors the ::before layer below to the full page */
+        }
+
+        /* Dedicated background layer, painted behind all page content */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;                  /* keeps it behind everything, including .gallery-container's frame */
+            pointer-events: none;         /* clicks pass through to the page beneath */
+
+            background-image: url('images/background.PNG');
+            background-repeat: repeat;
+            background-position: center center; /* tiles expand outward from the center */
+            background-size: 150px 150px;       /* size of EACH repeated tile — adjust to taste */
+
+            padding: 40px;                 /* inset the pattern from the viewport edges */
+            box-sizing: border-box;
+            background-clip: content-box;  /* makes the padding actually show as empty margin */
+
+            opacity: 0.3;                  /* fades just this background layer, not your content */
+        }
+
+        /* Container holding the image and buttons */
+        .gallery-container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            padding: 60px 20px;                 /* extra padding keeps content clear of the wavy border */
+            background-image: url('images/frame.PNG');
+            background-size: 80% 100%;         /* stretches the frame to fill this box exactly */
+            background-repeat: no-repeat;
+            background-position: center center;   /* horizontal vertical */
+            box-sizing: border-box;
+        }
+
+        /* Wraps a corner image and the gallery beneath it into one vertical stack */
+        .gallery-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Decorative image placed above a gallery */
+        .corner-img {
+            width: 150px;      /* adjust size independently of the tiled background */
+            height: auto;
+            opacity: 0.6;      /* adjust independently of the background pattern's opacity */
+            pointer-events: none;
+        }
+        .main-image {
+            width: 100%;
+            max-width: 300px;
+            height: 450px;
+            object-fit: cover; /* Keeps image proportions intact without stretching */
+            margin-bottom: 20px;
+        }
+
+        /* Container to align the 5 buttons neatly underneath */
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap; /* Wraps buttons to a new line on smaller mobile screens */
+        }
+
+
+        /* Visual feedback when hovering over a button */
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Small compression effect when the user clicks a button */
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+    .draggable-img {
+      cursor: grab;       /* Visual hint to users */
+    }
+    .draggable-img:active {
+      cursor: grabbing;   /* Changes cursor while dragging */
+    }
+
+.eye-gallery {
+    display: flex;
+    flex-direction: column;
+    align-items: center;   /* centers each image horizontally, regardless of its width */
+    gap: 4px;               /* small vertical spacing between rows */
+  }
+
+.eye-gallery img {
+    display: block;  }       /* no width/height set — images keep their original size */
+
+.mouth-gallery {
+    display: flex;
+    flex-direction: column;
+    align-items: center;   /* centers each image horizontally, regardless of its width */
+    gap: 4px;               /* small vertical spacing between rows */
+  }
+
+.mouth-gallery img {
+    display: block;  } 
+
+.nose-gallery {
+    display: flex;
+    flex-direction: column;
+    align-items: center;   /* centers each image horizontally, regardless of its width */
+    gap: 4px;               /* small vertical spacing between rows */
+    margin-left: 40px;      /* space between this gallery and the mouth gallery before it */
+  }
+
+.nose-gallery img {
+    display: block;  }       /* no width/height set — images keep their original size *
+    </style>
+</head>
+<body>
+
+<div class="gallery-column">
+  <img class="corner-img" src="images/background.PNG" alt="">
+  <div class="eye-gallery">
+    <img id="img-c" class="draggable-img" src="images/CEyes.PNG" alt="Image 1" draggable="false" width="200">
+    <img id="img-b" class="draggable-img" src="images/BEyes.PNG" alt="Image 2" draggable="false" width="200">
+    <img id="img-bu" class="draggable-img" src="images/BuEyes.PNG" alt="Image 3" draggable="false" width="200">
+    <img id="img-t" class="draggable-img" src="images/TEyes.PNG" alt="Image 4" draggable="false" width="200">
+    <img id="img-o" class="draggable-img" src="images/OEyes.PNG" alt="Image 5" draggable="false" width="200">
+  </div>
+</div>
+
+
+
+
+<div class="gallery-container">
+    <!-- Centered Main Image (Loads Image 1 by default) -->
+    <img id="display-img" class="main-image" src="images/Biden.PNG" alt="Main Display Image">
+
+    <!-- Group of 5 Buttons below the image -->
+    <div class="button-group">
+        <button class="btn" onclick="changeImage('images/Biden.PNG')">Joe</button>
+        <button class="btn" onclick="changeImage('images/Bush.PNG')">George</button>
+        <button class="btn" onclick="changeImage('images/Clinton.PNG')">Bill</button>
+        <button class="btn" onclick="changeImage('images/Obama.PNG')">Barack</button>
+        <button class="btn" onclick="changeImage('images/Trump.PNG')">Donald</button>
+    </div>
+</div>
+
+<div class="gallery-column">
+  <img class="corner-img" src="images/background.PNG" alt="">
+  <div class="mouth-gallery">
+    <img id="img-c" class="draggable-img" src="images/CMouth.PNG" alt="Image 1" draggable="false" width="150">
+    <img id="img-b" class="draggable-img" src="images/BMouth.PNG" alt="Image 2" draggable="false" width="150">
+    <img id="img-bu" class="draggable-img" src="images/BuMouth.PNG" alt="Image 3" draggable="false" width="150">
+    <img id="img-t" class="draggable-img" src="images/TMouth.PNG" alt="Image 4" draggable="false" width="150">
+    <img id="img-o" class="draggable-img" src="images/OMouth.PNG" alt="Image 5" draggable="false" width="150">
+  </div>
+</div>
+
+<div class="nose-gallery">
+  <img id="img-c" class="draggable-img" src="images/CNose.PNG" alt="Image 1" draggable="false" width="50">
+  <img id="img-b" class="draggable-img" src="images/BNose.PNG" alt="Image 2" draggable="false" width="50">
+  <img id="img-bu" class="draggable-img" src="images/BuNose.PNG" alt="Image 3" draggable="false" width="50">
+  <img id="img-t" class="draggable-img" src="images/TNose.PNG" alt="Image 4" draggable="false" width="50">
+  <img id="img-o" class="draggable-img" src="images/ONose.PNG" alt="Image 5" draggable="false" width="50">
+</div>
+
+
+  <script>
+    // Makes every .draggable-img element independently freely-draggable,
+    // using a CSS transform instead of changing `position`. A transform
+    // moves the element purely visually — it never leaves the document
+    // flow, so its neighbors never reflow to fill its spot.
+    let activeImg = null;
+    let startX, startY;      // mouse position when the drag started
+    let baseX, baseY;        // the image's translate offset before this drag
+
+    document.querySelectorAll('.draggable-img').forEach((imgEl) => {
+      // Track each image's current offset across multiple drags
+      imgEl.dataset.tx = 0;
+      imgEl.dataset.ty = 0;
+
+      imgEl.addEventListener('mousedown', (e) => {
+        activeImg = imgEl;
+        startX = e.clientX;
+        startY = e.clientY;
+        baseX = parseFloat(imgEl.dataset.tx);
+        baseY = parseFloat(imgEl.dataset.ty);
+
+        imgEl.style.position = 'relative'; // stays in flow, just needed so z-index applies
+        imgEl.style.zIndex = 1001;          // bring the dragged image above the rest
+
+        e.preventDefault();
+      });
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!activeImg) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      const tx = baseX + dx;
+      const ty = baseY + dy;
+
+      activeImg.style.transform = `translate(${tx}px, ${ty}px)`;
+      activeImg.dataset.tx = tx;
+      activeImg.dataset.ty = ty;
+    });
+
+    document.addEventListener('mouseup', () => {
+      activeImg = null;
+    });
+  </script>
+
+
+<script>
+    /**
+     * Function to change the 'src' attribute of the main image slot.
+     * @param {string} imageSrc - The path or URL of the target image.
+     */
+    function changeImage(imageSrc) {
+        document.getElementById('display-img').src = imageSrc;
+    }
+</script>
+
+</body>
+</html>
+
